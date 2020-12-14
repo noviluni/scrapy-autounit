@@ -544,7 +544,11 @@ class TestRecording(unittest.TestCase):
         with CaseSpider() as spider:
             spider.imports('import random')
             spider.custom_settings('''
-                AUTOUNIT_DONT_RECORD_META = ['random_value']
+                AUTOUNIT_DONT_RECORD_META = [
+                    'random_value',
+                    'some.nested.key',
+                    'some.nested.list[].key',
+                ]
             ''')
             spider.start_requests("yield scrapy.Request('data:text/plain,')")
             spider.parse('''
@@ -552,7 +556,25 @@ class TestRecording(unittest.TestCase):
                 if not response.meta.get('done'):
                     yield scrapy.Request(
                         'data:text/plain,',
-                        meta={'done': True, 'random_value': random.random()},
+                        meta={
+                            'done': True,
+                            'random_value': random.random(),
+                            'some': {
+                                'nested': {
+                                    'key': random.random(),
+                                    'list': [
+                                        {
+                                            'key': random.random(),
+                                            'other_key': 'some_value'
+                                        },
+                                        {
+                                            'key': random.random(),
+                                            'other_key': 'some_other_value'
+                                        }
+                                    ]
+                                }
+                            }
+                        },
                         dont_filter=True
                     )
             ''')
@@ -563,7 +585,11 @@ class TestRecording(unittest.TestCase):
         with CaseSpider() as spider:
             spider.imports('import random')
             spider.custom_settings('''
-                AUTOUNIT_DONT_TEST_META = ['random_value']
+                AUTOUNIT_DONT_TEST_META = [
+                    'random_value',
+                    'some.nested.key',
+                    'some.nested.list[].key',
+                ]
             ''')
             spider.start_requests("yield scrapy.Request('data:text/plain,')")
             spider.parse('''
@@ -571,7 +597,25 @@ class TestRecording(unittest.TestCase):
                 if not response.meta.get('done'):
                     yield scrapy.Request(
                         'data:text/plain,',
-                        meta={'done': True, 'random_value': random.random()},
+                        meta={
+                            'done': True,
+                            'random_value': random.random(),
+                            'some': {
+                                'nested': {
+                                    'key': random.random(),
+                                    'list': [
+                                        {
+                                            'key': random.random(),
+                                            'other_key': 'some_value'
+                                        },
+                                        {
+                                            'key': random.random(),
+                                            'other_key': 'some_other_value'
+                                        }
+                                    ]
+                                }
+                            }
+                        },
                         dont_filter=True
                     )
             ''')
